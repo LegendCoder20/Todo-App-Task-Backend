@@ -2,11 +2,22 @@ import UserModel from "../models/userSchema.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import {UserLogin, UserRegister} from "../validation/userValidation.js";
 
 // LOGIN USER LOGIC
-
 export const loginUser = asyncHandler(async (req, res) => {
   const {email, password} = req.body;
+
+  const userValidation = UserLogin.safeParse({email, password});
+
+  if (!userValidation.success) {
+    const errorMessages = userValidation.error.issues.map(
+      (err) => `${err.message}`
+    );
+
+    res.status(400);
+    throw new Error(`Validation failed: ${errorMessages.join(", ")}`);
+  }
 
   const user = await UserModel.findOne({email});
 
@@ -18,7 +29,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   let passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     res.status(400);
-    throw new Error("Passwords Didn't Match");
+    throw new Error("Incorrect Password");
   }
 
   const token = jwt.sign(
@@ -43,9 +54,19 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 // REGISTER USER LOGIC
-
 export const registerUser = asyncHandler(async (req, res) => {
   const {name, email, password} = req.body;
+
+  const userValidation = UserRegister.safeParse({name, email, password});
+
+  if (!userValidation.success) {
+    const errorMessages = userValidation.error.issues.map(
+      (err) => `${err.message}`
+    );
+
+    res.status(400);
+    throw new Error(`Validation failed: ${errorMessages}`);
+  }
 
   const userEmail = await UserModel.findOne({email});
 

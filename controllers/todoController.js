@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import TodoModel from "../models/todoSchema.js";
+import {Todo} from "../validation/todoValidation.js";
 
 // GET ALL TODOS of USER
 export const getAllTodos = asyncHandler(async (req, res) => {
@@ -38,6 +39,16 @@ export const createTodo = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Some Fields are Missing");
   }
+  const todoValidation = Todo.safeParse({title, description});
+
+  if (!todoValidation.success) {
+    const errorMessages = todoValidation.error.issues.map(
+      (err) => `${err.message}`
+    );
+
+    res.status(400);
+    throw new Error(`Validation Error: ${errorMessages.join(",")}`);
+  }
 
   const newTodo = await TodoModel.create({
     title,
@@ -60,6 +71,17 @@ export const updateTodo = asyncHandler(async (req, res) => {
   if (!title || !description) {
     res.status(400);
     throw new Error("Some Fields are Missing");
+  }
+
+  const todoValidation = Todo.safeParse({title, description});
+
+  if (!todoValidation.success) {
+    const errorMessages = todoValidation.error.issues.map(
+      (err) => `${err.message}`
+    );
+
+    res.status(400);
+    throw new Error(`Validation Error: ${errorMessages.join(",")}`);
   }
 
   const updatedTodo = await TodoModel.findOneAndUpdate(

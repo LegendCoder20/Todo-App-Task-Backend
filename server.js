@@ -13,6 +13,16 @@ const app = express();
 connectDatabase();
 
 app.use(express.json());
+// JSON PARSER ERROR HANDLER MIDDLEWARE
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).json({
+      message: "Invalid JSON",
+      error: err.message,
+    });
+  }
+  next(err);
+});
 app.use(cors());
 
 app.use("/api", userRoutes);
