@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const TodoSchema = new mongoose.Schema(
   {
@@ -26,4 +26,4 @@ const TodoSchema = new mongoose.Schema(
 );
 
 const TodoModel = mongoose.model("Todo", TodoSchema);
-module.exports = TodoModel;
+export default TodoModel;
