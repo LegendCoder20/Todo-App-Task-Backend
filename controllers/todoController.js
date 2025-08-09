@@ -5,7 +5,10 @@ import {Todo} from "../validation/todoValidation.js";
 // GET ALL TODOS of USER
 export const getAllTodos = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const todos = await TodoModel.find({user: userId});
+  const todos = await TodoModel.find({user: userId}).populate(
+    "user",
+    "name email"
+  );
 
   res.status(200).json({
     message: "All Todos Fetched",
