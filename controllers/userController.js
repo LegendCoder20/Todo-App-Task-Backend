@@ -39,11 +39,17 @@ export const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
     },
     process.env.JWT_SECRET,
-    {expiresIn: "30d"}
+    {expiresIn: "7d"}
   );
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: "strict",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  });
+
   res.status(200).json({
-    success: true,
     message: "Logged in Successfully",
     user: {
       name: user.name,
@@ -93,8 +99,15 @@ export const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
     },
     process.env.JWT_SECRET,
-    {expiresIn: "30d"}
+    {expiresIn: "7d"}
   );
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: "strict",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  });
 
   res.status(201).json({
     message: "Registered Successfully",
@@ -115,5 +128,22 @@ export const getUser = asyncHandler(async (req, res) => {
     message: "Logged in Successfully",
     name: user.name,
     email: user.email,
+  });
+});
+
+// USER LOGOUT  LOGIC
+
+export const logOut = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: "strict",
+    expires: new Date(0),
+  });
+
+  res.status(200).json({
+    message: "Logged Out Successfully",
   });
 });
