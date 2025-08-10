@@ -16,7 +16,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
 
     res.status(400);
-    throw new Error(`Validation failed: ${errorMessages.join(", ")}`);
+    throw new Error(`${errorMessages.join(", ")}`);
   }
 
   const user = await UserModel.findOne({email});
@@ -65,15 +65,17 @@ export const registerUser = asyncHandler(async (req, res) => {
     );
 
     res.status(400);
-    throw new Error(`Validation failed: ${errorMessages}`);
+    throw new Error(`${errorMessages}`);
   }
 
   const userEmail = await UserModel.findOne({email});
 
   if (userEmail) {
+    console.log("User exists! Throwing error.");
     res.status(400);
     throw new Error("User Already Exists");
   }
+  console.log("Creating user...");
 
   let saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);

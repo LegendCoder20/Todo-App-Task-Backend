@@ -50,7 +50,7 @@ export const createTodo = asyncHandler(async (req, res) => {
     );
 
     res.status(400);
-    throw new Error(`Validation Error: ${errorMessages.join(",")}`);
+    throw new Error(` ${errorMessages.join(",")}`);
   }
 
   const newTodo = await TodoModel.create({
@@ -84,7 +84,7 @@ export const updateTodo = asyncHandler(async (req, res) => {
     );
 
     res.status(400);
-    throw new Error(`Validation Error: ${errorMessages.join(",")}`);
+    throw new Error(` ${errorMessages.join(",")}`);
   }
 
   const updatedTodo = await TodoModel.findOneAndUpdate(
