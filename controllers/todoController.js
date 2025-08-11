@@ -16,23 +16,6 @@ export const getAllTodos = asyncHandler(async (req, res) => {
   });
 });
 
-// GET TODO DETAIL
-export const getTodoDetail = asyncHandler(async (req, res) => {
-  const todoId = req.params.id;
-  const userId = req.user.id;
-
-  const todo = await TodoModel.findOne({_id: todoId, user: userId});
-
-  if (!todo) {
-    throw new Error("Todo not Found");
-  }
-
-  res.status(200).json({
-    message: "Todo Detail Fetched",
-    todo: todo,
-  });
-});
-
 // CREATE TODO
 export const createTodo = asyncHandler(async (req, res) => {
   const {title, description} = req.body;

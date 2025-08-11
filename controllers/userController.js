@@ -77,11 +77,9 @@ export const registerUser = asyncHandler(async (req, res) => {
   const userEmail = await UserModel.findOne({email});
 
   if (userEmail) {
-    console.log("User exists! Throwing error.");
     res.status(400);
     throw new Error("User Already Exists");
   }
-  console.log("Creating user...");
 
   let saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);

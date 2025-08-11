@@ -14,7 +14,6 @@ export const protect = async (req, res, next) => {
 
     return next();
   } catch (err) {
-    console.error(err);
     return res.status(401).json({
       message: "Not Authorized - Issue in Auth Middleware",
     });
