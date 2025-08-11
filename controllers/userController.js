@@ -134,13 +134,12 @@ export const getUser = asyncHandler(async (req, res) => {
 // USER LOGOUT  LOGIC
 
 export const logOut = asyncHandler(async (req, res) => {
-  const user = req.user;
-
   res.cookie("token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production" ? true : false,
-    sameSite: "strict",
+    sameSite: "none",
     expires: new Date(0),
+    path: "/",
   });
 
   res.status(200).json({
