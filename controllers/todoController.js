@@ -10,9 +10,28 @@ export const getAllTodos = asyncHandler(async (req, res) => {
     "name email"
   );
 
+  const limit = parseInt(req.query.limit) || 10;
+  const cursor = req.query.cursor;
+
+  const query = cursor ? {_id: {$gt: cursor}} : {};
+  const allTodos = await TodoModel.find(query)
+    .sort({_id: 1})
+    .limit(limit + 1);
+
+  let nextCursor = null;
+  let hasMore = false;
+
+  if (allTodos.length > limit) {
+    hasMore = true;
+    nextCursor = allTodos[limit - 1]._id;
+    allTodos.length = limit;
+  }
+
   res.status(200).json({
-    message: "All Todos Fetched",
-    todos: todos,
+    message: "Todos Fetched",
+    todos: allTodos,
+    nextCursor: nextCursor,
+    hasMore: hasMore,
   });
 });
 
