@@ -27,7 +27,10 @@ app.use((err, req, res, next) => {
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://todo-app-task-frontend.onrender.com",
+    origin: [
+      "https://todo-app-task-frontend.onrender.com",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
